@@ -1,0 +1,113 @@
+// STAFF (akun pengguna sistem)
+Table staffs {
+  id int [pk, increment]
+  name varchar(100)
+  email varchar(100) [unique, not null]
+  password varchar(255) [not null]
+  role varchar(50)
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+// STAFF PROFILE (One-to-One dengan STAFF)
+Table staff_profiles {
+  id int [pk, increment]
+  staff_id int [unique, not null]
+  address text
+  phone varchar(20)
+  date_of_birth date
+  emergency_contact varchar(100)
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+// MENU (stok minuman & makanan)
+Table menus {
+  id int [pk, increment]
+  name varchar(100) [not null]
+  category varchar(50)
+  price decimal(10,2)
+  stock int [default: 0]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+// MEMBER (pelanggan tetap)
+Table members {
+  id int [pk, increment]
+  name varchar(100)
+  phone varchar(20)
+  email varchar(100)
+  reward_points int [default: 0]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+// REWARD (daftar reward yang tersedia)
+Table rewards {
+  id int [pk, increment]
+  name varchar(100)
+  description text
+  required_points int
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+// MEMBER_REWARDS (Many-to-Many antara member dan reward)
+Table member_rewards {
+  id int [pk, increment]
+  member_id int [not null]
+  reward_id int [not null]
+  redeemed_at timestamp [default: `CURRENT_TIMESTAMP`]
+  status bool
+}
+
+// RESERVATION (reservasi meja)
+Table reservations {
+  id int [pk, increment]
+  member_id int [not null]
+  reservation_date date
+  time_slot varchar(20)
+  total_people int
+  note text
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+// TRANSACTION (pembelian di kasir)
+Table transactions {
+  id int [pk, increment]
+  staff_id int [not null]
+  member_id int
+  transaction_date timestamp [default: `CURRENT_TIMESTAMP`]
+  total_amount decimal(10,2)
+}
+
+// TRANSACTION ITEMS (rincian menu dalam transaksi)
+Table transaction_items {
+  id int [pk, increment]
+  transaction_id int [not null]
+  menu_id int [not null]
+  quantity int [default: 1]
+  subtotal decimal(10,2)
+}
+
+// ACTIVITY LOG (catatan aktivitas staff)
+Table activity_log {
+  id int [pk, increment]
+  staff_id int [not null]
+  action varchar(50)
+  details json
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+// RELATIONSHIPS
+
+// One-to-One
+Ref: staffs.id - staff_profiles.staff_id
+
+// One-to-Many
+Ref: staffs.id < transactions.staff_id
+Ref: members.id < transactions.member_id
+Ref: transactions.id < transaction_items.transaction_id
+Ref: menus.id < transaction_items.menu_id
+Ref: members.id < reservations.member_id
+Ref: staffs.id < activity_log.staff_id
+
+// Many-to-Many
+Ref: members.id < member_rewards.member_id
+Ref: rewards.id < member_rewards.reward_id
