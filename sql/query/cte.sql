@@ -9,10 +9,3 @@ WITH staff_sales AS (
   GROUP BY s.id, s.name
 )
 SELECT * FROM staff_sales ORDER BY total_sales DESC;
-
-
-
-
-
-
-
