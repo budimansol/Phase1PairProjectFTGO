@@ -1,6 +1,10 @@
--- ============================================
+-- DROP TABLE jika sudah ada (agar tidak error saat redeploy)
+DROP TABLE IF EXISTS 
+  transaction_items, transactions, reservations, member_rewards,
+  rewards, members, activity_log, staff_profiles, staffs, menus
+CASCADE;
+
 -- BEVERAGE CLI PROJECT - POSTGRESQL SCHEMA
--- ============================================
 
 CREATE DATABASE pairproject;
 \c pairproject
