@@ -5,10 +5,26 @@ import (
 	"github.com/budimansol/pairproject/internal/repository"
 )
 
-type StaffService interface {
-	CreateStaff(staff *model.Staff) error
+type StaffService struct {
+	repo *repository.StaffRepository
 }
 
-type staffService struct {
-	repo repository.StaffRepository
+func NewStaffService(repo *repository.StaffRepository) *StaffService {
+	return &StaffService{repo: repo}
+}
+
+func (s *StaffService) CreateStaff(staff model.Staff) error {
+	return s.repo.Create(staff)
+}
+
+func (s *StaffService) GetAllStaff() ([]model.Staff, error) {
+	return s.repo.GetAll()
+}
+
+func (s *StaffService) UpdateStaff(staff model.Staff) error {
+	return s.repo.Update(staff)
+}
+
+func (s *StaffService) DeleteStaff(id int) error {
+	return s.repo.Delete(id)
 }
