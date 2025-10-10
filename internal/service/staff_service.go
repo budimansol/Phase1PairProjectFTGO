@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/budimansol/pairproject/internal/model"
 	"github.com/budimansol/pairproject/internal/repository"
 )
@@ -27,4 +29,15 @@ func (s *StaffService) UpdateStaff(staff model.Staff) error {
 
 func (s *StaffService) DeleteStaff(id int) error {
 	return s.repo.Delete(id)
+}
+
+func (s *StaffService) Login(email, password string) (*model.Staff, error) {
+	staff, err := s.repo.FindByEmail(email)
+	if err != nil {
+		return nil, errors.New("staff not found")
+	}
+	if staff.Password != password {
+		return nil, errors.New("invalid password")
+	}
+	return staff, nil
 }
