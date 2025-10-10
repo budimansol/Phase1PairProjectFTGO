@@ -1,8 +1,9 @@
 -- STAFFS
 INSERT INTO staffs (name, email, password, role) VALUES
-('Rina Wibowo', 'rina@beverage.id', 'hashed_password_1', 'Manager'),
-('Budi Santoso', 'budi@beverage.id', 'hashed_password_2', 'Cashier'),
-('Siti Aisyah', 'siti@beverage.id', 'hashed_password_3', 'Barista');
+('Rina Wibowo', 'rina@mail.com', '123', 'Manager'),
+('Budi Santoso', 'budi@mail.com', '123', 'Cashier'),
+('Siti Aisyah', 'siti@mail.com', '123', 'Barista'),
+('admin', 'admin@mail.com', '123', 'admin');
 
 -- STAFF PROFILES (One-to-One)
 INSERT INTO staff_profiles (staff_id, address, phone, date_of_birth, emergency_contact) VALUES

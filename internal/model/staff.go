@@ -9,4 +9,5 @@ type Staff struct {
 	Password string
 	Role     string
 	CreatedAt time.Time
+	Profile   *StaffProfile 
 }
