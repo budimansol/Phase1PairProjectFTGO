@@ -34,8 +34,12 @@ func main() {
 	menuService := service.NewMenuService(menuRepo)
 	menuHandler := handler.NewMenuHandler(menuService)
 
+	resRepo := repository.NewReservationRepository(conn)
+	resService := service.NewReservationService(resRepo)
+	resHandler := handler.NewReservationHandler(resService)
 
-	mainHandler := handler.NewMainHandler(staffHandler, menuHandler)
+
+	mainHandler := handler.NewMainHandler(staffHandler, menuHandler, resHandler)
 	mainHandler.Run()
 }
 
