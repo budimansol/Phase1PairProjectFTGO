@@ -10,10 +10,10 @@ import (
 )
 
 type MemberHandler struct {
-	service service.MemberService
+	service *service.MemberService
 }
 
-func NewMemberHandler(s service.MemberService) *MemberHandler {
+func NewMemberHandler(s *service.MemberService) *MemberHandler {
 	return &MemberHandler{service: s}
 }
 
@@ -29,7 +29,11 @@ func (h *MemberHandler) Menu() {
 				"5. Exit"},
 		}
 
-		_, result, _ := prompt.Run()
+		_, result, err := prompt.Run()
+		if err != nil {
+			fmt.Println("❌ Prompt error:", err)
+			continue
+		}
 
 		switch result {
 		case "1. Create":
@@ -51,12 +55,24 @@ func (h *MemberHandler) create() {
 	phonePrompt := promptui.Prompt{Label: "Phone"}
 	emailPrompt := promptui.Prompt{Label: "Email"}
 
-	name, _ := namePrompt.Run()
-	phone, _ := phonePrompt.Run()
-	email, _ := emailPrompt.Run()
+	name, err := namePrompt.Run()
+	if err != nil {
+		fmt.Println("❌ Name input error:", err)
+		return
+	}
+	phone, err := phonePrompt.Run()
+	if err != nil {
+		fmt.Println("❌ Phone input error:", err)
+		return
+	}
+	email, err := emailPrompt.Run()
+	if err != nil {
+		fmt.Println("❌ Email input error:", err)
+		return
+	}
 
 	member := model.Member{Name: name, Phone: phone, Email: email, RewardPoints: 0}
-	err := h.service.CreateMember(&member)
+	err = h.service.CreateMember(&member)
 	if err != nil {
 		fmt.Println("❌ Failed to create member:", err)
 		return
@@ -74,23 +90,44 @@ func (h *MemberHandler) list() {
 	for _, s := range members {
 		fmt.Printf("%d. %s (%s) - %s - %d\n", s.ID, s.Name, s.Email, s.Phone, s.RewardPoints)
 	}
+	fmt.Println("====================")
 }
 
 func (h *MemberHandler) update() {
 	idPrompt := promptui.Prompt{Label: "Member ID"}
-	idStr, _ := idPrompt.Run()
-	id, _ := strconv.Atoi(idStr)
+	idStr, err := idPrompt.Run()
+	if err != nil {
+		fmt.Println("❌ ID input error:", err)
+		return
+	}
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		fmt.Println("❌ Invalid ID:", err)
+		return
+	}
 
 	namePrompt := promptui.Prompt{Label: "New Name"}
 	emailPrompt := promptui.Prompt{Label: "New Email"}
 	phonePrompt := promptui.Prompt{Label: "New Phone"}
 
-	name, _ := namePrompt.Run()
-	email, _ := emailPrompt.Run()
-	phone, _ := phonePrompt.Run()
+	name, err := namePrompt.Run()
+	if err != nil {
+		fmt.Println("❌ Name input error:", err)
+		return
+	}
+	email, err := emailPrompt.Run()
+	if err != nil {
+		fmt.Println("❌ Email input error:", err)
+		return
+	}
+	phone, err := phonePrompt.Run()
+	if err != nil {
+		fmt.Println("❌ Phone input error:", err)
+		return
+	}
 
 	member := model.Member{ID: id, Name: name, Email: email, Phone: phone}
-	err := h.service.UpdateMember(&member, id)
+	err = h.service.UpdateMember(&member, id)
 	if err != nil {
 		fmt.Println("❌ Update failed:", err)
 		return
@@ -100,10 +137,18 @@ func (h *MemberHandler) update() {
 
 func (h *MemberHandler) delete() {
 	idPrompt := promptui.Prompt{Label: "Member ID"}
-	idStr, _ := idPrompt.Run()
-	id, _ := strconv.Atoi(idStr)
+	idStr, err := idPrompt.Run()
+	if err != nil {
+		fmt.Println("❌ ID input error:", err)
+		return
+	}
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		fmt.Println("❌ Invalid ID:", err)
+		return
+	}
 
-	err := h.service.DeleteMember(id)
+	err = h.service.DeleteMember(id)
 	if err != nil {
 		fmt.Println("❌ Failed to delete member:", err)
 		return

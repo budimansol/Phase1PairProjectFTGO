@@ -7,27 +7,28 @@ import (
 )
 
 type MainHandler struct {
-	StaffHandler  *StaffHandler
-	MemberHandler *MemberHandler
-	ReportHandler *ReportHandler
-	MenuHandler	  *MenuHandler
+	StaffHandler       *StaffHandler
+	MemberHandler      *MemberHandler
+	ReportHandler      *ReportHandler
+	MenuHandler        *MenuHandler
 	ReservationHandler *ReservationHandler
 }
 
 func NewMainHandler(
 	staffHandler *StaffHandler,
+	menuHandler *MenuHandler,
+	reservationHandler *ReservationHandler,
 	memberHandler *MemberHandler,
 	reportHandler *ReportHandler,
-  menuHandler *MenuHandler,
-  reservationHandler *ReservationHandler
 ) *MainHandler {
 	return &MainHandler{
-		StaffHandler:  staffHandler,
-		MemberHandler: memberHandler,
-		ReportHandler: reportHandler,
-    MenuHandler: menuHandler,
-    ReservationHandler : reservationHandler
-)
+		StaffHandler:       staffHandler,
+		MemberHandler:      memberHandler,
+		ReportHandler:      reportHandler,
+		MenuHandler:        menuHandler,
+		ReservationHandler: reservationHandler,
+	}
+}
 
 func (h *MainHandler) Run() {
 	for {
@@ -37,7 +38,7 @@ func (h *MainHandler) Run() {
 				"1. Staff Management",
 				"2. Menu Management",
 				"3. Reservation Management",
-        "4. Member Management",
+				"4. Member Management",
 				"5. Reports",
 				"6. Exit",
 			},
@@ -48,9 +49,9 @@ func (h *MainHandler) Run() {
 		switch result {
 		case "1. Staff Management":
 			h.StaffHandler.Menu()
-    case "2. Menu Management":
+		case "2. Menu Management":
 			h.MenuHandler.Menu()
-    case "3. Reservation Management":
+		case "3. Reservation Management":
 			h.ReservationHandler.Menu()
 		case "4. Member Management":
 			h.MemberHandler.Menu()

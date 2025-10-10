@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/budimansol/pairproject/db"
 	"github.com/budimansol/pairproject/internal/handler"
 	"github.com/budimansol/pairproject/internal/repository"
@@ -13,37 +11,35 @@ func main() {
 	conn := db.ConnectDB()
 	defer conn.Close()
 
-	
-
 	// Login Handler
-  staffRepo := repository.NewStaffRepository(conn)
+	staffRepo := repository.NewStaffRepository(conn)
 	staffService := service.NewStaffService(staffRepo)
-	loginHandler := handler.NewLoginHandler(staffService)
-  staffHandler := handler.NewStaffHandler(staffService)
-  
-	staffName, err := loginHandler.Login()
-	if err != nil {
-		fmt.Println("Login error:", err)
-		return
-	}
+	// loginHandler := handler.NewLoginHandler(staffService)
+	staffHandler := handler.NewStaffHandler(staffService)
 
-	fmt.Printf("🎉 Logged in as: %s\n\n", *staffName)
+	// staffName, err := loginHandler.Login()
+	// if err != nil {
+	// 	fmt.Println("Login error:", err)
+	// 	return
+	// }
+
+	// fmt.Printf("🎉 Logged in as: %s\n\n", *staffName)
 
 	// Setelah login, load handler lain
-  
-  // Repository & Service
-	
+
+	// Repository & Service
+
 	menuRepo := repository.NewMenuRepository(conn)
 	menuService := service.NewMenuService(menuRepo)
 	menuHandler := handler.NewMenuHandler(menuService)
 
+	memberRepo := repository.NewMemberRepository(conn)
+	memberService := service.NewMemberService(memberRepo)
+	memberHandler := handler.NewMemberHandler(memberService)
+
 	resRepo := repository.NewReservationRepository(conn)
 	resService := service.NewReservationService(resRepo)
 	resHandler := handler.NewReservationHandler(resService, memberService)
-
-	memberRepo := repository.NewMemberRepository(conn)
-	memberService := service.NewMemberService(memberRepo)
-  memberHandler := handler.NewMemberHandler(memberService)
 
 	// ==== REPORTS ====
 	reportRepo := repository.NewReportRepository(conn)
@@ -51,8 +47,6 @@ func main() {
 	reportHandler := handler.NewReportHandler(reportService)
 
 	// ==== MAIN HANDLER ====
-	mainHandler := handler.NewMainHandler(staffHandler, menuHandler,resHandler, memberHandler, reportHandler)
+	mainHandler := handler.NewMainHandler(staffHandler, menuHandler, resHandler, memberHandler, reportHandler)
 	mainHandler.Run()
 }
-
-
