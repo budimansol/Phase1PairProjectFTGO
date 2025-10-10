@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/budimansol/pairproject/db"
 	"github.com/budimansol/pairproject/internal/handler"
 	"github.com/budimansol/pairproject/internal/repository"
@@ -13,39 +11,38 @@ func main() {
 	conn := db.ConnectDB()
 	defer conn.Close()
 
-	// Repository & Service
+	// --- Repositories ---
 	staffRepo := repository.NewStaffRepository(conn)
-	staffService := service.NewStaffService(staffRepo)
-
-	// Login Handler
-	loginHandler := handler.NewLoginHandler(staffService)
-	staffName, err := loginHandler.Login()
-	if err != nil {
-		fmt.Println("Login error:", err)
-		return
-	}
-
-	fmt.Printf("🎉 Logged in as: %s\n\n", *staffName)
-
-	// Setelah login, load handler lain
-	staffHandler := handler.NewStaffHandler(staffService)
-
 	menuRepo := repository.NewMenuRepository(conn)
-	menuService := service.NewMenuService(menuRepo)
-	menuHandler := handler.NewMenuHandler(menuService)
-
-	resRepo := repository.NewReservationRepository(conn)
-	resService := service.NewReservationService(resRepo)
-	
-
 	memberRepo := repository.NewMemberRepository(conn)
+	resRepo := repository.NewReservationRepository(conn)
+	transRepo := repository.NewTransactionRepository(conn)
+
+	// --- Services ---
+	staffService := service.NewStaffService(staffRepo)
+	menuService := service.NewMenuService(menuRepo)
 	memberService := service.NewMemberService(memberRepo)
+	resService := service.NewReservationService(resRepo)
+	transService := service.NewTransactionService(transRepo)
 
+	// --- Login Handler ---
+	loginHandler := handler.NewLoginHandler(staffService)
+
+	// --- Handlers ---
+	staffHandler := handler.NewStaffHandler(staffService)
+	menuHandler := handler.NewMenuHandler(menuService)
 	resHandler := handler.NewReservationHandler(resService, memberService)
+	transHandler := handler.NewTransactionHandler(transService, memberService, menuService, staffService)
 
+	// --- Main Handler ---
+	mainHandler := handler.NewMainHandler(
+		loginHandler,
+		staffHandler,
+		menuHandler,
+		resHandler,
+		transHandler,
+	)
 
-	mainHandler := handler.NewMainHandler(staffHandler, menuHandler, resHandler)
+	// --- Run CLI ---
 	mainHandler.Run()
 }
-
-

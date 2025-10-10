@@ -1,8 +1,7 @@
 package handler
 
 import (
-	"fmt"
-
+	"github.com/budimansol/pairproject/internal/model"
 	"github.com/budimansol/pairproject/internal/service"
 	"github.com/manifoldco/promptui"
 )
@@ -15,30 +14,12 @@ func NewLoginHandler(staffService *service.StaffService) *LoginHandler {
 	return &LoginHandler{staffService}
 }
 
-func (h *LoginHandler) Login() (*string, error) {
-	for {
-		fmt.Println("🔐 Staff Login")
+func (h *LoginHandler) Login() (*model.Staff, error) {
+	emailPrompt := promptui.Prompt{Label: "Email"}
+	email, _ := emailPrompt.Run()
 
-		// Prompt email
-		emailPrompt := promptui.Prompt{
-			Label: "Email",
-		}
-		email, _ := emailPrompt.Run()
+	passwordPrompt := promptui.Prompt{Label: "Password", Mask: '*'}
+	password, _ := passwordPrompt.Run()
 
-		// Prompt password (hidden input)
-		passPrompt := promptui.Prompt{
-			Label: "Password",
-			Mask:  '*',
-		}
-		password, _ := passPrompt.Run()
-
-		staff, err := h.staffService.Login(email, password)
-		if err != nil {
-			fmt.Println("❌ Login failed:", err)
-			continue
-		}
-
-		fmt.Printf("✅ Welcome, %s!\n", staff.Name)
-		return &staff.Name, nil
-	}
+	return h.staffService.Login(email, password)
 }
