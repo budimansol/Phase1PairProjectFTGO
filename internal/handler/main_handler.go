@@ -8,13 +8,16 @@ import (
 
 type MainHandler struct {
 	StaffHandler  *StaffHandler
+	MenuHandler	  *MenuHandler
 }
 
 func NewMainHandler(
 	staffHandler *StaffHandler,
+	menuHandler *MenuHandler,
 ) *MainHandler {
 	return &MainHandler{
 		StaffHandler:  staffHandler,
+		MenuHandler: menuHandler,
 	}
 }
 
@@ -24,7 +27,8 @@ func (h *MainHandler) Run() {
 			Label: "🏪 Beverage CLI Main Menu",
 			Items: []string{
 				"1. Staff Management",
-				"2. Exit",
+				"2. Menu Management",
+				"3. Exit",
 			},
 		}
 
@@ -33,7 +37,9 @@ func (h *MainHandler) Run() {
 		switch result {
 		case "1. Staff Management":
 			h.StaffHandler.Menu()
-		case "2. Exit":
+		case "2. Menu Management":
+			h.MenuHandler.Menu()
+		case "3. Exit":
 			fmt.Println("👋 Exiting Beverage CLI... Goodbye!")
 			return
 		}

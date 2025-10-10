@@ -29,7 +29,13 @@ func main() {
 
 	// Setelah login, load handler lain
 	staffHandler := handler.NewStaffHandler(staffService)
-	mainHandler := handler.NewMainHandler(staffHandler)
+
+	menuRepo := repository.NewMenuRepository(conn)
+	menuService := service.NewMenuService(menuRepo)
+	menuHandler := handler.NewMenuHandler(menuService)
+
+
+	mainHandler := handler.NewMainHandler(staffHandler, menuHandler)
 	mainHandler.Run()
 }
 
