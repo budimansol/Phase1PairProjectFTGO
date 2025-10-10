@@ -36,7 +36,12 @@ func main() {
 
 	resRepo := repository.NewReservationRepository(conn)
 	resService := service.NewReservationService(resRepo)
-	resHandler := handler.NewReservationHandler(resService)
+	
+
+	memberRepo := repository.NewMemberRepository(conn)
+	memberService := service.NewMemberService(memberRepo)
+
+	resHandler := handler.NewReservationHandler(resService, memberService)
 
 
 	mainHandler := handler.NewMainHandler(staffHandler, menuHandler, resHandler)

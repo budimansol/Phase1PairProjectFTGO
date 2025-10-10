@@ -9,6 +9,10 @@ type ReservationService struct {
 	repo *repository.ReservationRepository
 }
 
+func (s *ReservationService) GetAllMembers() (any, any) {
+	panic("unimplemented")
+}
+
 func NewReservationService(repo *repository.ReservationRepository) *ReservationService {
 	return &ReservationService{repo: repo}
 }
@@ -19,4 +23,12 @@ func (s *ReservationService) CreateReservation(res model.Reservation) error {
 
 func (s *ReservationService) GetAllReservations() ([]model.Reservation, error) {
 	return s.repo.GetAll()
+}
+
+func (s *ReservationService) UpdateReservation(reservation *model.Reservation) error {
+	return s.repo.Update(reservation)
+}
+
+func (s *ReservationService) DeleteReservation(id int) error {
+	return s.repo.Delete(id)
 }
