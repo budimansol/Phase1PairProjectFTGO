@@ -16,8 +16,12 @@ func main() {
 	staffService := service.NewStaffService(staffRepo)
 	staffHandler := handler.NewStaffHandler(staffService)
 
+	// ==== MEMBER ====
+	memberRepo := repository.NewMemberRepository(conn)
+	memberService := service.NewMemberService(memberRepo)
+	memberHandler := handler.NewMemberHandler(memberService)
+
 	// ==== MAIN HANDLER ====
-	mainHandler := handler.NewMainHandler(staffHandler)
+	mainHandler := handler.NewMainHandler(staffHandler, memberHandler)
 	mainHandler.Run()
 }
-
