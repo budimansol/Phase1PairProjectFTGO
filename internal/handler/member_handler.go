@@ -95,7 +95,7 @@ func (h *MemberHandler) update() {
 		fmt.Println("❌ Update failed:", err)
 		return
 	}
-	fmt.Println("✅ Staff updated successfully!")
+	fmt.Println("✅ Member updated successfully!")
 }
 
 func (h *MemberHandler) delete() {
@@ -105,8 +105,8 @@ func (h *MemberHandler) delete() {
 
 	err := h.service.DeleteMember(id)
 	if err != nil {
-		fmt.Println("❌ Failed to delete staff:", err)
+		fmt.Println("❌ Failed to delete member:", err)
 		return
 	}
-	fmt.Println("✅ Staff deleted successfully!")
+	fmt.Println("✅ Member deleted successfully!")
 }
