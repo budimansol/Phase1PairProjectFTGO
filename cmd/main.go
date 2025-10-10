@@ -13,12 +13,14 @@ func main() {
 	conn := db.ConnectDB()
 	defer conn.Close()
 
-	// Repository & Service
-	staffRepo := repository.NewStaffRepository(conn)
-	staffService := service.NewStaffService(staffRepo)
+	
 
 	// Login Handler
+  staffRepo := repository.NewStaffRepository(conn)
+	staffService := service.NewStaffService(staffRepo)
 	loginHandler := handler.NewLoginHandler(staffService)
+  staffHandler := handler.NewStaffHandler(staffService)
+  
 	staffName, err := loginHandler.Login()
 	if err != nil {
 		fmt.Println("Login error:", err)
@@ -28,23 +30,28 @@ func main() {
 	fmt.Printf("🎉 Logged in as: %s\n\n", *staffName)
 
 	// Setelah login, load handler lain
-	staffHandler := handler.NewStaffHandler(staffService)
-
+  
+  // Repository & Service
+	
 	menuRepo := repository.NewMenuRepository(conn)
 	menuService := service.NewMenuService(menuRepo)
 	menuHandler := handler.NewMenuHandler(menuService)
 
 	resRepo := repository.NewReservationRepository(conn)
 	resService := service.NewReservationService(resRepo)
-	
+	resHandler := handler.NewReservationHandler(resService, memberService)
 
 	memberRepo := repository.NewMemberRepository(conn)
 	memberService := service.NewMemberService(memberRepo)
+  memberHandler := handler.NewMemberHandler(memberService)
 
-	resHandler := handler.NewReservationHandler(resService, memberService)
+	// ==== REPORTS ====
+	reportRepo := repository.NewReportRepository(conn)
+	reportService := service.NewReportService(reportRepo)
+	reportHandler := handler.NewReportHandler(reportService)
 
-
-	mainHandler := handler.NewMainHandler(staffHandler, menuHandler, resHandler)
+	// ==== MAIN HANDLER ====
+	mainHandler := handler.NewMainHandler(staffHandler, menuHandler,resHandler, memberHandler, reportHandler)
 	mainHandler.Run()
 }
 
